@@ -23,7 +23,20 @@ class LktUser extends GeneratedLktUser
         return $this;
     }
 
-    public static function getLogged(): static
+    public static function authenticate(string $username, string $password): static
+    {
+        $query = static::getQueryCaller()
+            ->andEmailEqual($username)
+            ->andPasswordEqual($password);
+
+        $user = static::getOne($query);
+
+        $_SESSION['user'] = $user->getId();
+
+        return $user;
+    }
+
+    public static function getLoggedInUserId(): int
     {
         $id = (int)$_SESSION['user'];
         $token = null;
@@ -47,6 +60,11 @@ class LktUser extends GeneratedLktUser
             }
         }
 
-        return static::getInstance($id, static::COMPONENT);
+        return $id;
+    }
+
+    public static function getLoggedInUser(): static
+    {
+        return static::getInstance(static::getLoggedInUserId(), static::COMPONENT);
     }
 }
