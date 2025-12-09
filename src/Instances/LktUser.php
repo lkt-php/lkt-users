@@ -10,20 +10,20 @@ class LktUser extends GeneratedLktUser
 {
     const COMPONENT = 'lkt-user';
 
-    public function login(): static
+    public function signIn(): static
     {
         $_SESSION['user'] = $this->getId();
         return $this;
     }
 
-    public function logout(): static
+    public function signOut(): static
     {
         $_SESSION['user'] = 0;
         session_destroy();
         return $this;
     }
 
-    public static function authenticate(string $username, string $password): static
+    public static function authenticate(string $username, string $password): ?static
     {
         $query = static::getQueryCaller()
             ->andEmailEqual($username)
@@ -31,12 +31,18 @@ class LktUser extends GeneratedLktUser
 
         $user = static::getOne($query);
 
-        $_SESSION['user'] = $user->getId();
+        $_SESSION['user'] = (int)$user?->getId();
 
         return $user;
     }
 
-    public static function getLoggedInUserId(): int
+    public static function ableToSignUp(string $username): bool
+    {
+        $user = static::getOne(static::getQueryCaller()->andEmailEqual($username));
+        return !is_object($user);
+    }
+
+    public static function getSignedInUserId(): int
     {
         $id = (int)$_SESSION['user'];
         $token = null;
@@ -63,8 +69,15 @@ class LktUser extends GeneratedLktUser
         return $id;
     }
 
-    public static function getLoggedInUser(): static
+    public static function getSignedInUser(): ?static
     {
-        return static::getInstance(static::getLoggedInUserId(), static::COMPONENT);
+        $instance = static::getInstance(static::getSignedInUserId(), static::COMPONENT);
+        if ($instance->isAnonymous()) return null;
+        return $instance;
+    }
+
+    public static function signedIn(): bool
+    {
+        return static::getSignedInUserId() > 0;
     }
 }
