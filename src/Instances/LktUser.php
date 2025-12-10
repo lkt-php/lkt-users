@@ -10,6 +10,11 @@ class LktUser extends GeneratedLktUser
 {
     const COMPONENT = 'lkt-user';
 
+    public function hasAdminAccess(): bool
+    {
+        return count($this->getAdminRolesData()) > 0;
+    }
+
     public function signIn(): static
     {
         $_SESSION['user'] = $this->getId();
@@ -32,6 +37,12 @@ class LktUser extends GeneratedLktUser
         $user = static::getOne($query);
 
         $_SESSION['user'] = (int)$user?->getId();
+
+        if ($user) {
+            LktAuthenticationLog::logSuccessSignInAttempt($username, $user);
+        } else {
+            LktAuthenticationLog::logInvalidSignInAttempt($username, $password);
+        }
 
         return $user;
     }

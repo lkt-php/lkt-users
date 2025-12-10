@@ -2,6 +2,7 @@
 
 namespace Lkt\Users\Config\Schemas;
 
+use Lkt\Factory\Schemas\Fields\ConcatField;
 use Lkt\Factory\Schemas\Fields\DateTimeField;
 use Lkt\Factory\Schemas\Fields\EmailField;
 use Lkt\Factory\Schemas\Fields\ForeignKeysField;
@@ -34,6 +35,8 @@ Schema::add(
         )
         ->addField(StringField::define('firstName', 'firstname'))
         ->addField(StringField::define('lastName', 'lastname'))
+        ->addField(ConcatField::concat('fullName', ['firstName', 'lastName'], ' '))
+        ->addField(ConcatField::concat('name', ['firstName', 'lastName'], ' '))
         ->addField(EmailField::define('email'))
         ->addField(StringField::define('password'))
         ->addField(StringField::define('credentialIdentifier', 'credential_id'))

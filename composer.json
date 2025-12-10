@@ -11,7 +11,8 @@
     "lkt/http-response": "^2.0",
     "lkt/commander": "^2.0",
     "lkt/code-maker": "^2.1",
-    "lkt/http-router": "^1.0"
+    "lkt/http-router": "^1.0",
+    "donatj/phpuseragentparser": "^1.11"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5",
