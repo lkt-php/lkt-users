@@ -36,7 +36,7 @@ class LktAuthenticationLogs20251207154850 extends AbstractMigration
         if ($exists) {
             return;
         }
-        $table = $this->table('lkt_authentication_logs', ['collation' => 'utf8_unicode_ci'])
+        $table = $this->table('lkt_authentication_logs', ['collation' => 'utf8mb4_unicode_ci'])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => null, 'update' => 'CURRENT_TIMESTAMP'])
 

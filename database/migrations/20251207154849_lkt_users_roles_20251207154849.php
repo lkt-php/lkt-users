@@ -36,7 +36,7 @@ class LktUsersRoles20251207154849 extends AbstractMigration
         if ($exists) {
             return;
         }
-        $table = $this->table('lkt_users_roles', ['collation' => 'utf8_unicode_ci'])
+        $table = $this->table('lkt_users_roles', ['collation' => 'utf8mb4_unicode_ci'])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => null, 'update' => 'CURRENT_TIMESTAMP'])
             ->addColumn('created_by', 'integer', ['default' => 0])
