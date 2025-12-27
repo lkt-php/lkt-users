@@ -7,9 +7,16 @@ class LktPermissionController
     protected static $permissionsManagement = [];
     protected static $ensuredPermissions = [];
 
-    public static function enablePermissionManagement(string $component, string $permission): void
+    public static function enablePermissionManagement(string $component, string|array $permission): void
     {
         if (!is_array(static::$permissionsManagement[$component])) static::$permissionsManagement[$component] = [];
+
+        if (is_array($permission)) {
+            foreach ($permission as $perm) {
+                if (!in_array($perm, static::$permissionsManagement[$component])) static::$permissionsManagement[$component][] = $perm;
+            }
+            return;
+        }
         if (!in_array($permission, static::$permissionsManagement[$component])) static::$permissionsManagement[$component][] = $permission;
     }
 

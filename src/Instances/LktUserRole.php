@@ -17,6 +17,12 @@ class LktUserRole extends GeneratedLktUserRole
         return $haystack[$component][$permission] === true;
     }
 
+    public function postProcessRead(array $response): array
+    {
+        $response['permissions'] = $this->preparePermissions();
+        return $response;
+    }
+
     public function preparePermissions(): array
     {
         $currentConfig = $this->getPermissions();
