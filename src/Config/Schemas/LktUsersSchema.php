@@ -39,6 +39,7 @@ Schema::add(
         ->addField(ConcatField::concat('name', ['firstName', 'lastName'], ' '))
         ->addField(EmailField::define('email'))
         ->addField(StringField::define('password'))
+        ->addField(StringField::define('preferredLanguage', 'preferred_language'))
         ->addField(StringField::define('credentialIdentifier', 'credential_id'))
         ->addField(ForeignKeysField::defineRelation(LktUserRole::COMPONENT, 'appRoles', 'app_roles'))
         ->addField(ForeignKeysField::defineRelation(LktUserRole::COMPONENT, 'adminRoles', 'admin_roles'))
