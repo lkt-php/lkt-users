@@ -2,6 +2,7 @@
 
 namespace Lkt\Users\Instances;
 
+use Lkt\Factory\Instantiator\Enums\CrudOperation;
 use Lkt\Users\Config\Controllers\LktPermissionController;
 use Lkt\Users\Generated\GeneratedLktUserRole;
 
@@ -19,7 +20,10 @@ class LktUserRole extends GeneratedLktUserRole
 
     public function postProcessRead(array $response): array
     {
-        $response['permissions'] = $this->preparePermissions();
+        if ($this->accessPolicy) {
+            if ($this->accessPolicy->name === 'lkt-related') return $response;
+        }
+        $response['permissions'] = $this->convertPermissionsValueToTableFormat();
         return $response;
     }
 
@@ -43,5 +47,38 @@ class LktUserRole extends GeneratedLktUserRole
         }
 
         return $r;
+    }
+
+    public function convertPermissionsValueToTableFormat(): array
+    {
+        $haystack = $this->preparePermissions();
+        $r = [];
+
+        foreach ($haystack as $component => $perms) {
+            $r[] = [
+                'component' => $component,
+                ...$perms,
+            ];
+        }
+
+        return $r;
+    }
+
+    public function convertTablePermissionsToValueFormat(array $haystack): array
+    {
+        $r = [];
+        foreach ($haystack as $item) {
+            $t = $item;
+            $component = $t['component'];
+            unset($t['component']);
+            $r[$component] = $t;
+        }
+        return $r;
+    }
+
+    public function prepareCrudData(array $data, CrudOperation|null $operation = null): array
+    {
+        $data['permissions'] = $this->convertTablePermissionsToValueFormat($data['permissions']);
+        return $data;
     }
 }

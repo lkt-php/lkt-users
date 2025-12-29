@@ -17,6 +17,10 @@ Schema::add(
                 ->setNamespaceForGeneratedClass('Lkt\Users\Generated')
                 ->setWhereStoreGeneratedClass(__DIR__ . '/../../Generated')
         )
+        ->setRelatedAccessPolicy([
+            'id' => 'value',
+            'name' => 'label',
+        ])
         ->setItemsPerPage(20)
         ->setCountableField('id')
         ->addField(IdField::define('id'))
