@@ -33,9 +33,8 @@ class LktAuthenticationLogs20251207154850 extends AbstractMigration
     public function change()
     {
         $exists = $this->hasTable('lkt_authentication_logs');
-        if ($exists) {
-            return;
-        }
+        if ($exists) return;
+
         $table = $this->table('lkt_authentication_logs', ['collation' => 'utf8mb4_unicode_ci'])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => null, 'update' => 'CURRENT_TIMESTAMP'])
@@ -54,6 +53,7 @@ class LktAuthenticationLogs20251207154850 extends AbstractMigration
             ->addColumn('client_browser_version', 'string', ['limit' => 100, 'default' => ''])
 
             ->addColumn('user_id', 'integer', ['limit' => MysqlAdapter::INT_REGULAR, 'default' => 0])
+            ->addColumn('user_status', 'integer', ['limit' => MysqlAdapter::INT_REGULAR, 'default' => 0])
         ;
 
         $table->create();

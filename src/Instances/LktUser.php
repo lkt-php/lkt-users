@@ -36,11 +36,18 @@ class LktUser extends GeneratedLktUser
 
         $user = static::getOne($query);
 
-        $_SESSION['user'] = (int)$user?->getId();
-
         if ($user) {
-            LktAuthenticationLog::logSuccessSignInAttempt($username, $user);
+            if ($user->statusIsActive()) {
+                $_SESSION['user'] = (int)$user?->getId();
+                LktAuthenticationLog::logSuccessSignInAttempt($username, $user);
+
+            } else {
+                $_SESSION['user'] = 0;
+                LktAuthenticationLog::logInvalidSignInAttempt($username, $password, $user);
+            }
+
         } else {
+            $_SESSION['user'] = 0;
             LktAuthenticationLog::logInvalidSignInAttempt($username, $password);
         }
 
@@ -90,5 +97,13 @@ class LktUser extends GeneratedLktUser
     public static function signedIn(): bool
     {
         return static::getSignedInUserId() > 0;
+    }
+
+    public function changePassword(string $password): static
+    {
+        return $this
+            ->setAccessPolicy('change-password')
+            ->autoUpdate(['password' => $password])
+            ->save();
     }
 }

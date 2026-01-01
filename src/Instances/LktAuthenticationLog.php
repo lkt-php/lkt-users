@@ -11,7 +11,7 @@ class LktAuthenticationLog extends GeneratedLktAuthenticationLog
     const COMPONENT = 'lkt-authentication-log';
 
 
-    final public static function logInvalidSignInAttempt(string $attemptedCredential, string $attemptedPassword): static
+    final public static function logInvalidSignInAttempt(string $attemptedCredential, string $attemptedPassword, LktUser|null $user = null): static
     {
         $now = new \DateTime();
         $now->sub(\DateInterval::createFromDateString('10 minutes'));
@@ -24,7 +24,7 @@ class LktAuthenticationLog extends GeneratedLktAuthenticationLog
         $parser = new UserAgentParser();
         $ua = $parser->parse();
 
-        return static::getInstance()
+        $r = static::getInstance()
             ->setCreatedAt(time())
             ->setPerformedAction(PerformedAuthAction::SignIn->value)
             ->setAttemptedSuccessfully(false)
@@ -36,8 +36,15 @@ class LktAuthenticationLog extends GeneratedLktAuthenticationLog
             ->setClientOS($ua->platform())
             ->setAttemptedCredential($attemptedCredential)
             ->setAttemptedPassword($attemptedPassword)
-            ->setAttemptsCounter(count($previousAttempts))
-            ->save();
+            ->setAttemptsCounter(count($previousAttempts));
+
+        if ($user instanceof LktUser) {
+            $r
+                ->setUserId($user->getId())
+                ->setUserStatus($user->getStatus());
+        }
+
+        return $r->save();
     }
 
     final public static function logSuccessSignInAttempt(string $attemptedCredential, LktUser|null $user = null): static

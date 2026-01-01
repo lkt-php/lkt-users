@@ -33,9 +33,8 @@ class LktUsersRoles20251207154849 extends AbstractMigration
     public function change()
     {
         $exists = $this->hasTable('lkt_users_roles');
-        if ($exists) {
-            return;
-        }
+        if ($exists) return;
+
         $table = $this->table('lkt_users_roles', ['collation' => 'utf8mb4_unicode_ci'])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => null, 'update' => 'CURRENT_TIMESTAMP'])

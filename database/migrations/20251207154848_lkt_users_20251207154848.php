@@ -33,14 +33,14 @@ class LktUsers20251207154848 extends AbstractMigration
     public function change()
     {
         $exists = $this->hasTable('lkt_users');
-        if ($exists) {
-            return;
-        }
+        if ($exists) return;
+
         $table = $this->table('lkt_users', ['collation' => 'utf8mb4_unicode_ci'])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => null, 'update' => 'CURRENT_TIMESTAMP'])
             ->addColumn('created_by', 'integer', ['default' => 0])
 
+            ->addColumn('status', 'smallinteger', ['default' => 1])
             ->addColumn('firstname', 'string', ['limit' => 255, 'default' => ''])
             ->addColumn('lastname', 'string', ['limit' => 255, 'default' => ''])
             ->addColumn('email', 'string', ['limit' => 255, 'default' => ''])
