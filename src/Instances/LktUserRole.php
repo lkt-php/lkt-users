@@ -3,19 +3,56 @@
 namespace Lkt\Users\Instances;
 
 use Lkt\Factory\Instantiator\Enums\CrudOperation;
+use Lkt\Factory\Instantiator\Instances\AbstractInstance;
+use Lkt\Factory\Schemas\Schema;
 use Lkt\Users\Config\Controllers\LktPermissionController;
+use Lkt\Users\Enums\RoleCapability;
 use Lkt\Users\Generated\GeneratedLktUserRole;
 
 class LktUserRole extends GeneratedLktUserRole
 {
     const COMPONENT = 'lkt-user-role';
 
-    public function hasPermission(string $component, string $permission): bool
+    public function hasPermission(string $component, string $permission, AbstractInstance|null $instance = null): bool
     {
-        $haystack = $this->getPermissions();
-        if (!isset($haystack[$component])) return false;
-        if (!isset($haystack[$component][$permission])) return false;
-        return $haystack[$component][$permission] === true;
+        // Firstly, check if there is a component without any kind of configuration
+        // which attempts to always granted
+        if (!LktPermissionController::hasComponentRegistered($component)) return true;
+
+        // Secondly, check if that component has always granted/rejected that specific permission
+        $capability = LktPermissionController::getEnsuredPermission($component, $permission);
+
+        // Finally, check if there is a configured permission
+        if (!$capability) {
+            $haystack = $this->getPermissions();
+            if (!isset($haystack[$component])) return false;
+            if (!isset($haystack[$component][$permission])) return false;
+            $capability = RoleCapability::tryFrom($haystack[$component][$permission]);
+        }
+
+        // Check capability
+        if ($capability) {
+            switch ($capability) {
+                case RoleCapability::Disabled:
+                    return false;
+
+                case RoleCapability::All:
+                    return true;
+
+                case RoleCapability::Owned:
+                    if (is_object($instance)) {
+                        $schema = Schema::get($component);
+                        $ownershipField = $schema->getOwnershipField();
+                        if (!$ownershipField) return false;
+
+                        $ownerUserId = $instance->callOwnMethod($ownershipField->getGetterForPrimitiveValue(), []);
+                        return $ownerUserId === LktUser::getSignedInUserId();
+                    }
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     public function postProcessRead(array $response): array
@@ -38,8 +75,11 @@ class LktUserRole extends GeneratedLktUserRole
             $t = [];
 
             foreach ($perms as $perm) {
-                $value = false;
-                if (isset($currentConfig[$component])) $value = (bool)$currentConfig[$component][$perm] === true;
+                $value = RoleCapability::Disabled->value;
+                if (isset($currentConfig[$component])) {
+                    $valid = RoleCapability::tryFrom($currentConfig[$component][$perm]);
+                    if ($valid) $value = $valid->value;
+                }
                 $t[$perm] = $value;
             }
 
@@ -78,6 +118,7 @@ class LktUserRole extends GeneratedLktUserRole
 
     public function prepareCrudData(array $data, CrudOperation|null $operation = null): array
     {
+        $data['permissions'] = is_array($data['permissions']) ? $data['permissions'] : [];
         $data['permissions'] = $this->convertTablePermissionsToValueFormat($data['permissions']);
         return $data;
     }

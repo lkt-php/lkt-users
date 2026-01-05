@@ -5,8 +5,9 @@ namespace Lkt\Users\Instances;
 use Lkt\Http\Router;
 use Lkt\Users\Generated\GeneratedLktUser;
 use Lkt\Users\Generated\LktUserQueryBuilder;
+use Lkt\Users\Interfaces\SessionUserInterface;
 
-class LktUser extends GeneratedLktUser
+class LktUser extends GeneratedLktUser implements SessionUserInterface
 {
     const COMPONENT = 'lkt-user';
 

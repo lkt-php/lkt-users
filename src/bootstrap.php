@@ -2,7 +2,9 @@
 
 namespace Lkt\Translations;
 
+use Lkt\Commander\Commander;
 use Lkt\Phinx\PhinxConfigurator;
+use Lkt\Users\Console\Commands\SetupTranslationsCommand;
 use function Lkt\Tools\Requiring\requireFiles;
 
 requireFiles([
@@ -11,4 +13,6 @@ requireFiles([
 
 if (php_sapi_name() == 'cli') {
     PhinxConfigurator::addMigrationPath(__DIR__ . '/../database/migrations');
+
+    Commander::register(new SetupTranslationsCommand());
 }
