@@ -2,6 +2,7 @@
 
 namespace Lkt\Users\Instances;
 
+use Lkt\Factory\Instantiator\Instances\AbstractInstance;
 use Lkt\Http\Router;
 use Lkt\Users\Generated\GeneratedLktUser;
 use Lkt\Users\Generated\LktUserQueryBuilder;
@@ -106,5 +107,21 @@ class LktUser extends GeneratedLktUser implements SessionUserInterface
             ->setAccessPolicy('change-password')
             ->autoUpdate(['password' => $password])
             ->save();
+    }
+
+    public function hasAppPermission(string $component, string $permission, AbstractInstance|null $instance = null): bool
+    {
+        foreach ($this->getAppRolesData() as $role) {
+            if ($role->hasPermission($component, $permission, $instance)) return true;
+        }
+        return false;
+    }
+
+    public function hasAdminPermission(string $component, string $permission, AbstractInstance|null $instance = null): bool
+    {
+        foreach ($this->getAdminRolesData() as $role) {
+            if ($role->hasPermission($component, $permission, $instance)) return true;
+        }
+        return false;
     }
 }

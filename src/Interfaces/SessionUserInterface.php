@@ -2,7 +2,7 @@
 
 namespace Lkt\Users\Interfaces;
 
-use Lkt\Users\Instances\LktUserRole;
+use Lkt\Factory\Instantiator\Instances\AbstractInstance;
 
 interface SessionUserInterface
 {
@@ -14,8 +14,6 @@ interface SessionUserInterface
     public static function getSignedInUserId(): int;
     public static function getSignedInUser(): ?static;
     public static function signedIn(): bool;
-
-    /** @return LktUserRole[] */
-    public function getAppRolesData(): array;
-    public function getAdminRolesData(): array;
+    public function hasAppPermission(string $component, string $permission, AbstractInstance|null $instance = null): bool;
+    public function hasAdminPermission(string $component, string $permission, AbstractInstance|null $instance = null): bool;
 }
