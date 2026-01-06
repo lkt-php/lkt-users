@@ -35,7 +35,7 @@ Schema::add(
                 ->setDefaultReadFormat('Y-m-d')
                 ->setCurrentTimeStampAsDefaultValue()
         )
-        ->addField(IntegerChoiceField::choice(UserStatus::getChoiceOptions(),'status'))
+        ->addField(IntegerChoiceField::enumChoice(UserStatus::class,'status'))
         ->addField(StringField::define('firstName', 'firstname'))
         ->addField(StringField::define('lastName', 'lastname'))
         ->addField(ConcatField::concat('fullName', ['firstName', 'lastName'], ' '))

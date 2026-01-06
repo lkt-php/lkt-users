@@ -2,7 +2,7 @@
   "name": "lkt/users",
   "description": "LKT PHP Users",
   "type": "library",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "require": {
     "php": ">=8.1.0",
     "ext-intl": "*",
@@ -11,7 +11,7 @@
     "lkt/http-response": "^2.0",
     "lkt/commander": "^2.0",
     "lkt/code-maker": "^3.0",
-    "lkt/http-router": "^1.0",
+    "lkt/http-router": "^2.0",
     "donatj/phpuseragentparser": "^1.11"
   },
   "require-dev": {

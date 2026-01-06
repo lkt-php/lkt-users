@@ -36,7 +36,7 @@ Schema::add(
                 ->setDefaultReadFormat('Y-m-d')
                 ->setCurrentTimeStampAsDefaultValue()
         )
-        ->addField(IntegerChoiceField::choice(PerformedAuthAction::getChoiceOptions(),'performedAction', 'performed_action'))
+        ->addField(IntegerChoiceField::enumChoice(PerformedAuthAction::class,'performedAction', 'performed_action'))
 
         ->addField(StringField::define('attemptedCredential', 'attempted_credential'))
         ->addField(StringField::define('attemptedPassword', 'attempted_password'))
@@ -50,6 +50,6 @@ Schema::add(
         ->addField(StringField::define('clientBrowserVersion', 'client_browser_version'))
 
         ->addField(ForeignKeyField::defineRelation(LktUser::COMPONENT, 'user', 'user_id'))
-        ->addField(IntegerChoiceField::choice(UserStatus::getChoiceOptions(),'userStatus', 'user_status')
+        ->addField(IntegerChoiceField::enumChoice(UserStatus::class,'userStatus', 'user_status')
             ->setDefaultValue(UserStatus::Undefined->value))
 );
