@@ -1,6 +1,6 @@
 <?php
 
-namespace Lkt\Translations;
+namespace Lkt\Users;
 
 use Lkt\Commander\Commander;
 use Lkt\Phinx\PhinxConfigurator;

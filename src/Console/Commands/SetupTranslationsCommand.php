@@ -41,6 +41,22 @@ class SetupTranslationsCommand extends Command
             'en' => 'All items',
         ], $parentId);
 
+
+        $parent = LktTranslation::createIfMissing('userThemeModes', TranslationType::Many, []);
+        $parentId = $parent->getId();
+        LktTranslation::createIfMissing('0', TranslationType::Text, [
+            'es' => 'Por defecto del sistema',
+            'en' => 'System default',
+        ], $parentId);
+        LktTranslation::createIfMissing('1', TranslationType::Text, [
+            'es' => 'Claro',
+            'en' => 'Light',
+        ], $parentId);
+        LktTranslation::createIfMissing('2', TranslationType::Text, [
+            'es' => 'Oscuro',
+            'en' => 'Dark',
+        ], $parentId);
+
         return 1;
     }
 }

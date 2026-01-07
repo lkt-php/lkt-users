@@ -47,6 +47,7 @@ class LktUsers20251207154848 extends AbstractMigration
             ->addColumn('credential_id', 'string', ['limit' => 255, 'default' => ''])
             ->addColumn('password', 'string', ['limit' => 255, 'default' => ''])
             ->addColumn('preferred_language', 'string', ['limit' => 10, 'default' => ''])
+            ->addColumn('preferred_theme_mode', 'smallinteger', ['default' => 0])
             ->addColumn('app_roles', 'text', ['null' => true, 'default' => null])
             ->addColumn('admin_roles', 'text', ['null' => true, 'default' => null])
             ->addColumn('session_token', 'string', ['limit' => 255, 'default' => ''])
