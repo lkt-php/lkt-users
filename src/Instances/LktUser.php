@@ -3,6 +3,7 @@
 namespace Lkt\Users\Instances;
 
 use Lkt\Factory\Instantiator\Instances\AbstractInstance;
+use Lkt\Http\Enums\AccessLevel;
 use Lkt\Http\Router;
 use Lkt\Users\Generated\GeneratedLktUser;
 use Lkt\Users\Generated\LktUserQueryBuilder;
@@ -119,9 +120,49 @@ class LktUser extends GeneratedLktUser implements SessionUserInterface
 
     public function hasAdminPermission(string $component, string $permission, AbstractInstance|null $instance = null): bool
     {
+        if (!$this->hasAdminAccess()) return false;
         foreach ($this->getAdminRolesData() as $role) {
             if ($role->hasPermission($component, $permission, $instance)) return true;
         }
         return false;
+    }
+
+    public function attemptToGrantPermissions(AccessLevel $accessLevel, string $component, array $permissions, AbstractInstance|null $instance = null): array
+    {
+        $r = [];
+
+        // Test perms which must be tested before granted
+        foreach ($permissions as $i => $grantedPerm) {
+
+            // Determine which perms are gonna be tested
+            // (it can be the array key (if string), or (if numeric array key) the array value or an array of string at array value)
+            $testedPerm = is_numeric($i) ? $grantedPerm : $i;
+            $testedPerms = [];
+            if (is_array($testedPerm)) $testedPerms = $testedPerm;
+            else $testedPerms[] = $testedPerm;
+
+            // Determine which perms are gonna be granted
+            // It can be a single perm or an array of perms
+            $grantedPerms = [];
+            if (is_array($grantedPerm)) $grantedPerms = $grantedPerm;
+            else $grantedPerms[] = $grantedPerm;
+
+            // Test permissions differently if it's an admin route or not
+            if ($accessLevel === AccessLevel::OnlyAdminUsers) {
+                foreach ($testedPerms as $testedPerm) {
+                    if ($this->hasAdminPermission($component, $testedPerm, $instance)) {
+                        foreach ($grantedPerms as $grantedPerm) $r[] = $grantedPerm;
+                    }
+                }
+            } else {
+                foreach ($testedPerms as $testedPerm) {
+                    if ($this->hasAppPermission($component, $testedPerm, $instance)) {
+                        foreach ($grantedPerms as $grantedPerm) $r[] = $grantedPerm;
+                    }
+                }
+            }
+        }
+
+        return $r;
     }
 }
