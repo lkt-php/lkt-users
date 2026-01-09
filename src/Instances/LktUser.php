@@ -15,7 +15,7 @@ class LktUser extends GeneratedLktUser implements SessionUserInterface
 
     public function hasAdminAccess(): bool
     {
-        return count($this->getAdminRolesData()) > 0;
+        return $this->isAdministrator() || count($this->getAdminRolesData()) > 0;
     }
 
     public function signIn(): static

@@ -51,6 +51,7 @@ class LktUsers20251207154848 extends AbstractMigration
             ->addColumn('app_roles', 'text', ['null' => true, 'default' => null])
             ->addColumn('admin_roles', 'text', ['null' => true, 'default' => null])
             ->addColumn('session_token', 'string', ['limit' => 255, 'default' => ''])
+            ->addColumn('is_administrator', 'boolean', ['default' => 0])
         ;
 
         $table->create();

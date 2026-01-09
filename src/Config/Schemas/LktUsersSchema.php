@@ -2,6 +2,7 @@
 
 namespace Lkt\Users\Config\Schemas;
 
+use Lkt\Factory\Schemas\Fields\BooleanField;
 use Lkt\Factory\Schemas\Fields\ConcatField;
 use Lkt\Factory\Schemas\Fields\DateTimeField;
 use Lkt\Factory\Schemas\Fields\EmailField;
@@ -49,5 +50,6 @@ Schema::add(
         ->addField(ForeignKeysField::defineRelation(LktUserRole::COMPONENT, 'appRoles', 'app_roles'))
         ->addField(ForeignKeysField::defineRelation(LktUserRole::COMPONENT, 'adminRoles', 'admin_roles'))
         ->addField(StringField::define('sessionToken', 'session_token'))
+        ->addField(BooleanField::define('isAdministrator', 'is_administrator'))
         ->addAccessPolicy('change-password', ['password'])
 );
