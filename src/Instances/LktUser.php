@@ -112,7 +112,11 @@ class LktUser extends GeneratedLktUser implements SessionUserInterface
 
     public function hasAppPermission(string $component, string $permission, AbstractInstance|null $instance = null): bool
     {
-        foreach ($this->getAppRolesData() as $role) {
+        $roles = $this->getAppRolesData();
+        // Use anonymous role in order to check for ensured perms
+        if (count($roles) === 0) return LktUserRole::getInstance()->hasPermission($component, $permission, $instance);
+
+        foreach ($roles as $role) {
             if ($role->hasPermission($component, $permission, $instance)) return true;
         }
         return false;
