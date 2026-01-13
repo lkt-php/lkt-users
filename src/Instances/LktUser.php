@@ -57,6 +57,24 @@ class LktUser extends GeneratedLktUser implements SessionUserInterface
         return $user;
     }
 
+    public static function rememberPassword(string $username): ?static
+    {
+        $query = static::getQueryCaller()
+            ->andEmailEqual($username);
+
+        $user = static::getOne($query);
+
+        if ($user) {
+            LktAuthenticationLog::logRememberPassword($username, $user);
+
+        } else {
+            $_SESSION['user'] = 0;
+            LktAuthenticationLog::logRememberPassword($username);
+        }
+
+        return $user;
+    }
+
     public static function ableToSignUp(string $username): bool
     {
         $user = static::getOne(static::getQueryCaller()->andEmailEqual($username));
