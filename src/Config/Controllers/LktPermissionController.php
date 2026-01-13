@@ -7,11 +7,12 @@ use Lkt\Users\Enums\RoleCapability;
 class LktPermissionController
 {
     protected static $permissionsManagement = [];
-    protected static $ensuredPermissions = [];
+    protected static $ensuredAppPermissions = [];
+    protected static $ensuredAdminPermissions = [];
 
     public static function hasComponentRegistered(string $component): bool
     {
-        return isset(static::$permissionsManagement[$component]) || isset(static::$ensuredPermissions[$component]);
+        return isset(static::$permissionsManagement[$component]);
     }
 
     public static function enablePermissionManagement(string $component, string|array $permission): void
@@ -29,9 +30,17 @@ class LktPermissionController
 
     public static function ensurePermission(string $component, string $permission, RoleCapability $capability = RoleCapability::Owned): void
     {
-        if (!is_array(static::$ensuredPermissions[$component])) static::$ensuredPermissions[$component] = [];
-        if (!in_array($permission, static::$ensuredPermissions[$component])) {
-            static::$ensuredPermissions[$component][$permission] = $capability;
+        if (!is_array(static::$ensuredAppPermissions[$component])) static::$ensuredAppPermissions[$component] = [];
+        if (!in_array($permission, static::$ensuredAppPermissions[$component])) {
+            static::$ensuredAppPermissions[$component][$permission] = $capability;
+        }
+    }
+
+    public static function ensureAdminPermission(string $component, string $permission, RoleCapability $capability = RoleCapability::Owned): void
+    {
+        if (!is_array(static::$ensuredAdminPermissions[$component])) static::$ensuredAdminPermissions[$component] = [];
+        if (!in_array($permission, static::$ensuredAdminPermissions[$component])) {
+            static::$ensuredAdminPermissions[$component][$permission] = $capability;
         }
     }
 
@@ -42,8 +51,15 @@ class LktPermissionController
 
     public static function getEnsuredPermission(string $component, string $permission): null|RoleCapability
     {
-        if (!isset(static::$ensuredPermissions[$component])) return null;
-        if (!isset(static::$ensuredPermissions[$component][$permission])) return null;
-        return static::$ensuredPermissions[$component][$permission];
+        if (!isset(static::$ensuredAppPermissions[$component])) return null;
+        if (!isset(static::$ensuredAppPermissions[$component][$permission])) return null;
+        return static::$ensuredAppPermissions[$component][$permission];
+    }
+
+    public static function getEnsuredAdminPermission(string $component, string $permission): null|RoleCapability
+    {
+        if (!isset(static::$ensuredAdminPermissions[$component])) return null;
+        if (!isset(static::$ensuredAdminPermissions[$component][$permission])) return null;
+        return static::$ensuredAdminPermissions[$component][$permission];
     }
 }

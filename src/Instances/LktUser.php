@@ -114,10 +114,10 @@ class LktUser extends GeneratedLktUser implements SessionUserInterface
     {
         $roles = $this->getAppRolesData();
         // Use anonymous role in order to check for ensured perms
-        if (count($roles) === 0) return LktUserRole::getInstance()->hasPermission($component, $permission, $instance);
+        if (count($roles) === 0) return LktUserRole::getInstance()->hasPermission($component, $permission, $instance, false);
 
         foreach ($roles as $role) {
-            if ($role->hasPermission($component, $permission, $instance)) return true;
+            if ($role->hasPermission($component, $permission, $instance, false)) return true;
         }
         return false;
     }
@@ -126,7 +126,7 @@ class LktUser extends GeneratedLktUser implements SessionUserInterface
     {
         if (!$this->hasAdminAccess()) return false;
         foreach ($this->getAdminRolesData() as $role) {
-            if ($role->hasPermission($component, $permission, $instance)) return true;
+            if ($role->hasPermission($component, $permission, $instance, true)) return true;
         }
         return false;
     }

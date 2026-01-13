@@ -57,6 +57,88 @@ class SetupTranslationsCommand extends Command
             'en' => 'Dark',
         ], $parentId);
 
+        $parent = LktTranslation::createIfMissing('userForm', TranslationType::Many, []);
+        $parentId = $parent->getId();
+        LktTranslation::createIfMissing('firstName', TranslationType::Text, [
+            'es' => 'Nombre',
+            'en' => 'Name',
+        ], $parentId);
+        LktTranslation::createIfMissing('lastName', TranslationType::Text, [
+            'es' => 'Apellidos',
+            'en' => 'Lastname',
+        ], $parentId);
+        LktTranslation::createIfMissing('email', TranslationType::Text, [
+            'es' => 'Email',
+            'en' => 'Email',
+        ], $parentId);
+        LktTranslation::createIfMissing('addUser', TranslationType::Text, [
+            'es' => 'Agregar usuario',
+            'en' => 'Add user',
+        ], $parentId);
+        LktTranslation::createIfMissing('addUserAndNew', TranslationType::Text, [
+            'es' => 'Agregar usuario y seguir',
+            'en' => 'Add user and new',
+        ], $parentId);
+        LktTranslation::createIfMissing('titleSingle', TranslationType::Text, [
+            'es' => 'Usuario',
+            'en' => 'User',
+        ], $parentId);
+        LktTranslation::createIfMissing('titleMany', TranslationType::Text, [
+            'es' => 'Usuarios',
+            'en' => 'Users',
+        ], $parentId);
+
+        $parent = LktTranslation::createIfMissing('userRoleForm', TranslationType::Many, []);
+        $parentId = $parent->getId();
+        LktTranslation::createIfMissing('name', TranslationType::Text, [
+            'es' => 'Nombre',
+            'en' => 'Name',
+        ], $parentId);
+        LktTranslation::createIfMissing('permissions', TranslationType::Text, [
+            'es' => 'Permisos',
+            'en' => 'Permissions',
+        ], $parentId);
+        LktTranslation::createIfMissing('component', TranslationType::Text, [
+            'es' => 'Componente',
+            'en' => 'Component',
+        ], $parentId);
+        LktTranslation::createIfMissing('ls', TranslationType::Text, [
+            'es' => 'Listar elementos',
+            'en' => 'List items',
+        ], $parentId);
+        LktTranslation::createIfMissing('mk', TranslationType::Text, [
+            'es' => 'Crear elementos',
+            'en' => 'Create items',
+        ], $parentId);
+        LktTranslation::createIfMissing('r', TranslationType::Text, [
+            'es' => 'Leer elemento',
+            'en' => 'Read item',
+        ], $parentId);
+        LktTranslation::createIfMissing('up', TranslationType::Text, [
+            'es' => 'Actualizar elementos',
+            'en' => 'Update items',
+        ], $parentId);
+        LktTranslation::createIfMissing('rm', TranslationType::Text, [
+            'es' => 'Eliminar elementos',
+            'en' => 'Drop items',
+        ], $parentId);
+        LktTranslation::createIfMissing('add', TranslationType::Text, [
+            'es' => 'Agregar rol',
+            'en' => 'Add role',
+        ], $parentId);
+        LktTranslation::createIfMissing('addAndNew', TranslationType::Text, [
+            'es' => 'Agregar rol y seguir',
+            'en' => 'Add role and new',
+        ], $parentId);
+        LktTranslation::createIfMissing('titleSingle', TranslationType::Text, [
+            'es' => 'Rol de usuario',
+            'en' => 'User role',
+        ], $parentId);
+        LktTranslation::createIfMissing('titleMany', TranslationType::Text, [
+            'es' => 'Roles de usuario',
+            'en' => 'User Roles',
+        ], $parentId);
+
         return 1;
     }
 }
