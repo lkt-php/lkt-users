@@ -88,6 +88,39 @@ class SetupTranslationsCommand extends Command
             'en' => 'Users',
         ], $parentId);
 
+        LktTranslation::createIfMissing('canReceiveMailNotifications', TranslationType::Text, [
+            'es' => 'Recibir notificaciones por correo',
+            'en' => 'Send mail notifications',
+        ], $parentId);
+
+        LktTranslation::createIfMissing('canReceivePushNotifications', TranslationType::Text, [
+            'es' => 'Recibir notificaciones push',
+            'en' => 'Send push notifications',
+        ], $parentId);
+
+        $parent = LktTranslation::createIfMissing('canReceiveMailNotificationsOptions', TranslationType::Many, []);
+        $parentId = $parent->getId();
+        LktTranslation::createIfMissing('0', TranslationType::Text, [
+            'es' => 'Solo esenciales',
+            'en' => 'Only essentials',
+        ], $parentId);
+        LktTranslation::createIfMissing('1', TranslationType::Text, [
+            'es' => 'Todas',
+            'en' => 'All',
+        ], $parentId);
+
+        $parent = LktTranslation::createIfMissing('canReceivePushNotificationsOptions', TranslationType::Many, []);
+        $parentId = $parent->getId();
+        LktTranslation::createIfMissing('0', TranslationType::Text, [
+            'es' => 'Solo esenciales',
+            'en' => 'Only essentials',
+        ], $parentId);
+        LktTranslation::createIfMissing('1', TranslationType::Text, [
+            'es' => 'Todas',
+            'en' => 'All',
+        ], $parentId);
+
+
         $parent = LktTranslation::createIfMissing('userRoleForm', TranslationType::Many, []);
         $parentId = $parent->getId();
         LktTranslation::createIfMissing('name', TranslationType::Text, [
