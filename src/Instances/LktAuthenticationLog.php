@@ -78,7 +78,30 @@ class LktAuthenticationLog extends GeneratedLktAuthenticationLog
         $r = static::getInstance()
             ->setCreatedAt(time())
             ->setPerformedAction(PerformedAuthAction::RememberPassword)
-            ->setAttemptedSuccessfully(true)
+            ->setAttemptedSuccessfully(is_object($user))
+            ->setClientProtocol($_SERVER['SERVER_PROTOCOL'])
+            ->setClientIPAddress($_SERVER['REMOTE_ADDR'])
+            ->setClientUserAgent($_SERVER['HTTP_USER_AGENT'])
+            ->setClientBrowser($ua->browser())
+            ->setClientBrowserVersion($ua->browserVersion())
+            ->setClientOS($ua->platform())
+            ->setAttemptedCredential($attemptedCredential)
+            ->setAttemptedPassword('');
+
+        if ($user) $r->setUserId($user->getId());
+
+        return $r->save();
+    }
+
+    final public static function logSignUp(string $attemptedCredential, LktUser|null $user = null): static
+    {
+        $parser = new UserAgentParser();
+        $ua = $parser->parse();
+
+        $r = static::getInstance()
+            ->setCreatedAt(time())
+            ->setPerformedAction(PerformedAuthAction::SignUp)
+            ->setAttemptedSuccessfully(!is_object($user))
             ->setClientProtocol($_SERVER['SERVER_PROTOCOL'])
             ->setClientIPAddress($_SERVER['REMOTE_ADDR'])
             ->setClientUserAgent($_SERVER['HTTP_USER_AGENT'])
