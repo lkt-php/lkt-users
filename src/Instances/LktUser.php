@@ -5,6 +5,8 @@ namespace Lkt\Users\Instances;
 use Lkt\Factory\Instantiator\Instances\AbstractInstance;
 use Lkt\Http\Enums\AccessLevel;
 use Lkt\Http\Router;
+use Lkt\Locale\Locale;
+use Lkt\Translations\Translations;
 use Lkt\Users\Generated\GeneratedLktUser;
 use Lkt\Users\Generated\LktUserQueryBuilder;
 use Lkt\Users\Interfaces\SessionUserInterface;
@@ -12,6 +14,8 @@ use Lkt\Users\Interfaces\SessionUserInterface;
 class LktUser extends GeneratedLktUser implements SessionUserInterface
 {
     const COMPONENT = 'lkt-user';
+
+    protected bool $pendingLocaleSetup = true;
 
     public function hasAdminAccess(): bool
     {
@@ -31,6 +35,17 @@ class LktUser extends GeneratedLktUser implements SessionUserInterface
         return $this;
     }
 
+    public function setupSignedUserLocale(): static
+    {
+        if (!$this->pendingLocaleSetup || $this->getId() !== static::getSignedInUserId()) return $this;
+
+        $lang = $this->getPreferredLanguage();
+        Locale::setLangCode($lang);
+        Translations::setLang($lang);
+        $this->pendingLocaleSetup = false;
+        return $this;
+    }
+
     public static function authenticate(string $username, string $password): ?static
     {
         $query = static::getQueryCaller()
@@ -42,6 +57,7 @@ class LktUser extends GeneratedLktUser implements SessionUserInterface
         if ($user) {
             if ($user->statusIsActive()) {
                 $_SESSION['user'] = (int)$user?->getId();
+                $user->setupSignedUserLocale();
                 LktAuthenticationLog::logSuccessSignInAttempt($username, $user);
 
             } else {
