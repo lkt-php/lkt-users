@@ -7,6 +7,7 @@ use Lkt\Http\Enums\AccessLevel;
 use Lkt\Http\Router;
 use Lkt\Locale\Locale;
 use Lkt\Translations\Translations;
+use Lkt\Users\Enums\RoleCapability;
 use Lkt\Users\Generated\GeneratedLktUser;
 use Lkt\Users\Generated\LktUserQueryBuilder;
 use Lkt\Users\Interfaces\SessionUserInterface;
@@ -164,6 +165,29 @@ class LktUser extends GeneratedLktUser implements SessionUserInterface
             if ($role->hasPermission($component, $permission, $instance, true)) return true;
         }
         return false;
+    }
+
+    public function getAppCapability(string $component, string $permission, AbstractInstance|null $instance = null):? RoleCapability
+    {
+        $roles = $this->getAppRolesData();
+        // Use anonymous role in order to check for ensured perms
+        if (count($roles) === 0) return LktUserRole::getInstance()->getDefinedRoleCapability($component, $permission, $instance, false);
+
+        foreach ($roles as $role) {
+            $capability = $role->getDefinedRoleCapability($component, $permission, $instance, false);
+            if ($capability) return $capability;
+        }
+        return null;
+    }
+
+    public function getAdminCapability(string $component, string $permission, AbstractInstance|null $instance = null):? RoleCapability
+    {
+        if (!$this->hasAdminAccess()) return null;
+        foreach ($this->getAdminRolesData() as $role) {
+            $capability = $role->getDefinedRoleCapability($component, $permission, $instance, true);
+            if ($capability) return $capability;
+        }
+        return null;
     }
 
     public function attemptToGrantPermissions(AccessLevel $accessLevel, string $component, array $permissions, AbstractInstance|null $instance = null): array

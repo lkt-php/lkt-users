@@ -13,6 +13,25 @@ class LktUserRole extends GeneratedLktUserRole
 {
     const COMPONENT = 'lkt-user-role';
 
+    public function getDefinedRoleCapability(string $component, string $permission, AbstractInstance|null $instance = null, bool $adminAccess = false): ?RoleCapability
+    {
+        // Firstly, check if there is a component without any kind of configuration
+        // which attempts to always granted
+        if (!LktPermissionController::hasComponentRegistered($component)) return null;
+
+        // Secondly, check if that component has always granted/rejected that specific permission
+        $capability = $adminAccess ? LktPermissionController::getEnsuredAdminPermission($component, $permission) : LktPermissionController::getEnsuredPermission($component, $permission);
+
+        // Finally, check if there is a configured permission
+        if (!$capability) {
+            $haystack = $this->getPermissions();
+            if (!isset($haystack[$component])) return null;
+            if (!isset($haystack[$component][$permission])) return null;
+            $capability = RoleCapability::tryFrom($haystack[$component][$permission]);
+        }
+        return $capability;
+    }
+
     public function hasPermission(string $component, string $permission, AbstractInstance|null $instance = null, bool $adminAccess = false): bool
     {
         // Firstly, check if there is a component without any kind of configuration
