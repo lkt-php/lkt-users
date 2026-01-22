@@ -28,18 +28,21 @@ class LktPermissionController
         if (!in_array($permission, static::$permissionsManagement[$component])) static::$permissionsManagement[$component][] = $permission;
     }
 
-    public static function ensurePermission(string $component, string $permission, RoleCapability $capability = RoleCapability::Owned): void
+    public static function ensurePermission(string $component, string|array $permission, RoleCapability $capability = RoleCapability::Owned): void
     {
+        if (!is_array($permission)) $permission = [$permission];
         if (!is_array(static::$ensuredAppPermissions[$component])) static::$ensuredAppPermissions[$component] = [];
-        if (!in_array($permission, static::$ensuredAppPermissions[$component])) {
-            static::$ensuredAppPermissions[$component][$permission] = $capability;
+        foreach ($permission as $perm) {
+            if (!array_key_exists($perm, static::$ensuredAppPermissions[$component])) {
+                static::$ensuredAppPermissions[$component][$perm] = $capability;
+            }
         }
     }
 
     public static function ensureAdminPermission(string $component, string $permission, RoleCapability $capability = RoleCapability::Owned): void
     {
         if (!is_array(static::$ensuredAdminPermissions[$component])) static::$ensuredAdminPermissions[$component] = [];
-        if (!in_array($permission, static::$ensuredAdminPermissions[$component])) {
+        if (!array_key_exists($permission, static::$ensuredAdminPermissions[$component])) {
             static::$ensuredAdminPermissions[$component][$permission] = $capability;
         }
     }

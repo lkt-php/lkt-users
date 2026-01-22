@@ -12,6 +12,7 @@ use Lkt\Factory\Schemas\Fields\IntegerChoiceField;
 use Lkt\Factory\Schemas\Fields\StringField;
 use Lkt\Factory\Schemas\InstanceSettings;
 use Lkt\Factory\Schemas\Schema;
+use Lkt\Locale\Locale;
 use Lkt\Users\Enums\ThemeMode;
 use Lkt\Users\Enums\UserStatus;
 use Lkt\Users\Instances\LktUser;
@@ -44,7 +45,9 @@ Schema::add(
         ->addField(ConcatField::concat('name', ['firstName', 'lastName'], ' '))
         ->addField(EmailField::define('email'))
         ->addField(StringField::define('password'))
-        ->addField(StringField::define('preferredLanguage', 'preferred_language'))
+        ->addField(StringField::define('preferredLanguage', 'preferred_language')->setDefaultValue(function (){
+            return trim(Locale::getLangCode());
+        }))
         ->addField(IntegerChoiceField::enumChoice(ThemeMode::class,'preferredThemeMode', 'preferred_theme_mode'))
         ->addField(StringField::define('credentialIdentifier', 'credential_id'))
         ->addField(ForeignKeysField::defineRelation(LktUserRole::COMPONENT, 'appRoles', 'app_roles'))
