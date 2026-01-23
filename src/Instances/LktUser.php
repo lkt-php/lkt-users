@@ -56,12 +56,13 @@ class LktUser extends GeneratedLktUser implements SessionUserInterface
         $user = static::getOne($query);
 
         if ($user) {
-            if ($user->statusIsActive()) {
+            if (!($user->statusIsArchived() || $user->statusIsBlocked())) {
                 $_SESSION['user'] = (int)$user?->getId();
                 $user->setupSignedUserLocale();
                 LktAuthenticationLog::logSuccessSignInAttempt($username, $user);
 
             } else {
+                $user = null;
                 $_SESSION['user'] = 0;
                 LktAuthenticationLog::logInvalidSignInAttempt($username, $password, $user);
             }
